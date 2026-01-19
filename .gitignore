@@ -2,3 +2,5 @@
 bkvenv
 .env
 .venv
+.adk
+__pycache__
