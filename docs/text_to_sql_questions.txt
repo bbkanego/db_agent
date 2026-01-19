@@ -20,7 +20,8 @@ AND s.amount > 100000
 AND s.to_date > CURRENT_DATE
 AND de.to_date > CURRENT_DATE
 
-3. who are the employess that are working in the Marketing department who make more than 100K and whose last names are either Tzvieli, Ramalingam, Escriba?
+3. Who are the employees that are working in the Marketing department who make
+more than 100K and whose last names are either Tzvieli, Ramalingam, Escriba?
 
 SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate,
 s.amount AS salary, d.dept_name AS department FROM employees.employee AS e
