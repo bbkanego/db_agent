@@ -1,4 +1,4 @@
-1. who are the employess that are working in the Marketing department who make more
+1. Who are the employees that are working in the Marketing department who make more
 than 100K and can be called as baby boomers?
 SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate, s.amount AS salary, d.dept_name AS department
 FROM employees.employee AS e
@@ -8,7 +8,7 @@ JOIN employees.department AS d ON de.department_id = d.id
 WHERE d.dept_name = 'Marketing' AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
 AND s.amount > 100000 AND s.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
 
-2. who are the employess that are working in the Marketing department who make more than 100K and can be called as Gen X?
+2. Who are the employees that are working in the Marketing department who make more than 100K and can be called as Gen X?
 SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate, s.amount AS salary, d.dept_name AS department
 FROM employees.employee AS e
 JOIN employees.salary AS s ON e.id = s.employee_id
@@ -33,7 +33,8 @@ AND e.last_name IN ('Tzvieli', 'Ramalingam', 'Escriba')
 AND s.amount > 100000
 AND s.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
 
-4. Who are the employees that are working in the Marketing department who make between 105K and 110K and can be called as baby boomers?
+4. Who are the employees that are working in the Marketing department who make between 105K and 110K
+and can be called as baby boomers?
 
 SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate,
 s.amount AS salary, d.dept_name AS department FROM employees.employee
@@ -55,3 +56,22 @@ JOIN employees.department_employee AS de ON e.id = de.employee_id
 JOIN employees.department AS d ON de.department_id = d.id
 WHERE d.dept_name = 'Marketing' AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
 AND s.amount BETWEEN 105000 AND 110000 AND dm.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
+
+6. What are all the distinct titles available to employees?
+SELECT title FROM employees.title GROUP BY title;
+Based on the provided tool output, all the titles available to employees are:
+
+Assistant Engineer
+Engineer
+Manager
+Senior Engineer
+Senior Staff
+Staff
+Technique Leader
+
+7. What are the titles of various people working in Marketing department?
+SELECT t.title FROM employees.title AS t
+JOIN employees.employee AS e ON t.employee_id = e.id
+JOIN employees.department_employee AS de ON e.id = de.employee_id
+JOIN employees.department AS d ON de.department_id = d.id
+WHERE d.dept_name = 'Marketing' AND t.to_date > CURRENT_DATE
