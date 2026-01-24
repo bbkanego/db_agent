@@ -5,7 +5,7 @@ from google.adk.agents.callback_context import CallbackContext
 from google.adk.tools.tool_context import ToolContext
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.tools import FunctionTool
-from google.genai.types import Part, Blob
+from google.genai.types import Part, Blob, GenerateContentConfig
 
 from utils.file_utils import read_file
 from dbscripts import database
@@ -13,8 +13,9 @@ import pandas as pd
 from fpdf import FPDF # Requires: pip install fpdf2
 
 model = LiteLlm(
-    model="ollama_chat/llama3.1:8b"
-    # model="ollama_chat/qwen3:latest"
+    #model="ollama_chat/llama3.1:8b"
+    #model="ollama_chat/pxlksr/defog_sqlcoder-7b-2:F16"
+    model="ollama_chat/qwen3:latest"
 )
 
 sql_engine = database.get_engine()
@@ -131,10 +132,18 @@ async def create_download_file(file_name:str = 'download_test',
 
 instruction_prompt = read_file('prompt/emp_system_prompt_v1.txt')
 
+
+generate_config = GenerateContentConfig(
+    temperature=0,
+    #max_output_tokens=2048,
+    top_p=1.0
+)
+
 root_agent = Agent(
     name="DataBase_Agent",
     model=model,
     instruction=instruction_prompt,
+    generate_content_config=generate_config,
     # When you assign a function to an agent’s tools list, the framework automatically wraps it as a FunctionTool.
     tools=[run_sql_query, create_download_file]
 )

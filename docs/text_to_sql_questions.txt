@@ -75,3 +75,51 @@ JOIN employees.employee AS e ON t.employee_id = e.id
 JOIN employees.department_employee AS de ON e.id = de.employee_id
 JOIN employees.department AS d ON de.department_id = d.id
 WHERE d.dept_name = 'Marketing' AND t.to_date > CURRENT_DATE
+
+8. If the top 5 earning employees in the Sales department were fired, how much money could be saved?
+select SUM(amount) as Total_Savings from (
+SELECT s.amount AS amount
+        FROM employees.employee AS e
+    JOIN employees.salary AS s ON e.id = s.employee_id
+    JOIN employees.department_employee AS de ON e.id = de.employee_id
+    JOIN employees.department AS d ON de.department_id = d.id
+WHERE d.dept_name = 'Sales' AND s.to_date > CURRENT_DATE
+  AND de.to_date > CURRENT_DATE ORDER BY s.amount DESC LIMIT 5) s
+
+9. If 5 new employees were to be hired in Sales Department with each getting a pay of $50000, then how much
+would the average pay of all the employees in Sales department change?
+WITH current_sales_data AS (
+    SELECT
+        SUM(s.amount) AS total_current_salary,
+        COUNT(*) AS current_employee_count
+    FROM employees.salary s
+    JOIN employees.department_employee de ON s.employee_id = de.employee_id
+    JOIN employees.department d ON de.department_id = d.id
+    WHERE d.dept_name = 'Sales'
+    AND de.to_date > CURRENT_DATE
+    AND s.to_date > CURRENT_DATE
+)
+SELECT
+    ( (total_current_salary + 250000) / (current_employee_count + 5) ) -
+    (total_current_salary / current_employee_count) AS average_pay_change
+FROM current_sales_data;
+
+10. Can you find the difference in expenses when it comes to salaries that
+are paid to employees that work in Marketing and Sales department?
+
+WITH dept_salaries AS (
+    SELECT
+        d.dept_name,
+        SUM(s.amount) AS total_salary
+    FROM employees.salary s
+    JOIN employees.department_employee de ON s.employee_id = de.employee_id
+    JOIN employees.department d ON de.department_id = d.id
+    WHERE d.dept_name IN ('Marketing', 'Sales')
+      AND de.to_date > CURRENT_DATE
+      AND s.to_date > CURRENT_DATE
+    GROUP BY d.dept_name
+)
+SELECT
+    COALESCE(MAX(CASE WHEN dept_name = 'Sales'     THEN total_salary END), 0) -
+    COALESCE(MAX(CASE WHEN dept_name = 'Marketing' THEN total_salary END), 0) AS salary_difference
+FROM dept_salaries;
