@@ -1,90 +1,147 @@
 1. Who are the employees that are working in the Marketing department who make more
 than 100K and can be called as baby boomers?
-SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate, s.amount AS salary, d.dept_name AS department
-FROM employees.employee AS e
-JOIN employees.salary AS s ON e.id = s.employee_id
-JOIN employees.department_employee AS de ON e.id = de.employee_id
-JOIN employees.department AS d ON de.department_id = d.id
-WHERE d.dept_name = 'Marketing' AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
-AND s.amount > 100000 AND s.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
+SELECT
+    e.first_name,
+    e.last_name,
+    e.gender,
+    TO_CHAR(e.hire_date, 'YYYY-MM-DD')     AS hire_date,
+    TO_CHAR(e.birth_date, 'YYYY-MM-DD')    AS birth_date,
+    s.amount                               AS salary,
+    d.dept_name                            AS department,
+    e.id                                   AS employee_id
+FROM
+    seerworks_org.employee           AS e
+JOIN
+    seerworks_org.salary             AS s  ON e.id = s.employee_id
+JOIN
+    seerworks_org.department_employee AS de ON e.id = de.employee_id
+JOIN
+    seerworks_org.department         AS d  ON de.department_id = d.id
+WHERE
+    d.dept_name = 'Marketing'
+    AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
+    AND s.amount > 100000
+    AND s.to_date  > CURRENT_DATE
+    AND de.to_date > CURRENT_DATE
+ORDER BY
+    e.last_name, e.first_name;   -- optional: alphabetical sort
 
 2. Who are the employees that are working in the Marketing department who make more than 100K and can be called as Gen X?
-SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate, s.amount AS salary, d.dept_name AS department
-FROM employees.employee AS e
-JOIN employees.salary AS s ON e.id = s.employee_id
-JOIN employees.department_employee AS de ON e.id = de.employee_id
-JOIN employees.department AS d ON de.department_id = d.id
-WHERE d.dept_name = 'Marketing'
-AND e.birth_date BETWEEN '1965-01-01' AND '1980-12-31'
-AND s.amount > 100000
-AND s.to_date > CURRENT_DATE
-AND de.to_date > CURRENT_DATE
+SELECT
+    e.first_name,
+    e.last_name,
+    e.gender,
+    TO_CHAR(e.hire_date, 'YYYY-MM-DD')     AS hire_date,
+    TO_CHAR(e.birth_date, 'YYYY-MM-DD')    AS birth_date,
+    s.amount                               AS salary,
+    d.dept_name                            AS department,
+    e.id                                   AS employee_id
+FROM
+    seerworks_org.employee           AS e
+JOIN
+    seerworks_org.salary             AS s  ON e.id = s.employee_id
+JOIN
+    seerworks_org.department_employee AS de ON e.id = de.employee_id
+JOIN
+    seerworks_org.department         AS d  ON de.department_id = d.id
+WHERE
+    d.dept_name = 'Marketing'
+    AND e.birth_date BETWEEN '1965-01-01' AND '1980-12-31'
+    AND s.amount > 100000
+    AND s.to_date  > CURRENT_DATE
+    AND de.to_date > CURRENT_DATE
+ORDER BY
+    e.last_name, e.first_name;   -- optional: alphabetical sort
 
 3. Who are the employees that are working in the Marketing department who make
 more than 100K and whose last names are either Tzvieli, Ramalingam, Escriba?
 
-SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate,
-s.amount AS salary, d.dept_name AS department FROM employees.employee AS e
-JOIN employees.salary AS s ON e.id = s.employee_id
-JOIN employees.department_employee AS de ON e.id = de.employee_id
-JOIN employees.department AS d ON de.department_id = d.id
-WHERE d.dept_name = 'Marketing' AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
-AND e.last_name IN ('Tzvieli', 'Ramalingam', 'Escriba')
-AND s.amount > 100000
-AND s.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
+SELECT
+    e.first_name,
+    e.last_name,
+    e.gender,
+    TO_CHAR(e.hire_date, 'YYYY-MM-DD')     AS hire_date,
+    TO_CHAR(e.birth_date, 'YYYY-MM-DD')    AS birth_date,
+    s.amount                               AS salary,
+    d.dept_name                            AS department,
+    e.id                                   AS employee_id
+FROM seerworks_org.employee           AS e
+JOIN seerworks_org.salary             AS s  ON e.id = s.employee_id
+JOIN seerworks_org.department_employee AS de ON e.id = de.employee_id
+JOIN seerworks_org.department         AS d  ON de.department_id = d.id
+WHERE d.dept_name = 'Marketing'
+  AND e.last_name IN ('Tzvieli', 'Ramalingam', 'Escriba')
+  AND s.amount > 100000
+  AND s.to_date  > CURRENT_DATE
+  AND de.to_date > CURRENT_DATE
+ORDER BY e.last_name, e.first_name;
 
 4. Who are the employees that are working in the Marketing department who make between 105K and 110K
 and can be called as baby boomers?
 
-SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate,
-s.amount AS salary, d.dept_name AS department FROM employees.employee
-AS e JOIN employees.salary AS s ON e.id = s.employee_id
-JOIN employees.department_employee AS de ON e.id = de.employee_id
-JOIN employees.department AS d ON de.department_id = d.id
-WHERE d.dept_name = 'Marketing' AND e.birth_date
-BETWEEN '1946-01-01' AND '1964-12-31' AND
-s.amount BETWEEN 105000 AND 110000 AND s.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE;
+SELECT e.first_name, e.last_name, e.gender,
+       TO_CHAR(e.hire_date, 'YYYY-MM-DD'),
+       TO_CHAR(e.birth_date, 'YYYY-MM-DD') AS birthdate,
+       s.amount AS salary,
+       d.dept_name AS department
+FROM seerworks_org.employee AS e
+JOIN seerworks_org.salary AS s ON e.id = s.employee_id
+JOIN seerworks_org.department_employee AS de ON e.id = de.employee_id
+JOIN seerworks_org.department AS d ON de.department_id = d.id
+WHERE d.dept_name = 'Marketing' AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
+AND s.amount BETWEEN 105000 AND 110000 AND s.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
+
 
 5. Who are the Manager employees that are working in the Marketing department who
 make between 105K and 110K and can be called as baby boomers?
 
-SELECT e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date AS birthdate, s.amount AS salary,
-d.dept_name AS department FROM employees.employee AS e
-JOIN employees.department_manager AS dm ON e.id = dm.employee_id
-JOIN employees.salary AS s ON e.id = s.employee_id
-JOIN employees.department_employee AS de ON e.id = de.employee_id
-JOIN employees.department AS d ON de.department_id = d.id
-WHERE d.dept_name = 'Marketing' AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
-AND s.amount BETWEEN 105000 AND 110000 AND dm.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
+SELECT
+    e.first_name,
+    e.last_name,
+    e.gender,
+    TO_CHAR(e.hire_date, 'YYYY-MM-DD')     AS hire_date,
+    TO_CHAR(e.birth_date, 'YYYY-MM-DD')    AS birth_date,
+    s.amount                               AS salary,
+    d.dept_name                            AS department,
+    e.id                                   AS employee_id
+FROM seerworks_org.employee           AS e
+JOIN seerworks_org.salary             AS s  ON e.id = s.employee_id
+JOIN seerworks_org.department_employee AS de ON e.id = de.employee_id
+JOIN seerworks_org.department         AS d  ON de.department_id = d.id
+WHERE d.dept_name = 'Marketing'
+  AND e.birth_date BETWEEN '1946-01-01' AND '1964-12-31'
+  AND s.amount BETWEEN 105000 AND 110000
+  AND s.to_date  > CURRENT_DATE
+  AND de.to_date > CURRENT_DATE
+  AND EXISTS (
+      SELECT 1
+      FROM seerworks_org.title t
+      WHERE t.employee_id = e.id
+        AND t.title = 'Manager'
+        AND t.to_date > CURRENT_DATE          -- ← critical addition
+  )
+ORDER BY e.last_name, e.first_name;
 
-6. What are all the distinct titles available to employees?
-SELECT title FROM employees.title GROUP BY title;
-Based on the provided tool output, all the titles available to employees are:
 
-Assistant Engineer
-Engineer
-Manager
-Senior Engineer
-Senior Staff
-Staff
-Technique Leader
+6. What are all the titles available to employees?
+SELECT DISTINCT t.title
+FROM seerworks_org.title AS t;
 
 7. What are the titles of various people working in Marketing department?
-SELECT t.title FROM employees.title AS t
-JOIN employees.employee AS e ON t.employee_id = e.id
-JOIN employees.department_employee AS de ON e.id = de.employee_id
-JOIN employees.department AS d ON de.department_id = d.id
-WHERE d.dept_name = 'Marketing' AND t.to_date > CURRENT_DATE
+SELECT DISTINCT t.title
+FROM seerworks_org.title AS t
+JOIN seerworks_org.department_employee AS de ON t.employee_id = de.employee_id
+JOIN seerworks_org.department AS d ON de.department_id = d.id
+WHERE d.dept_name = 'Marketing' AND t.to_date > CURRENT_DATE AND de.to_date > CURRENT_DATE
 
 8. If the top 5 earning employees in the Sales department were fired, how much money could be saved?
-select SUM(amount) as Total_Savings from (
-SELECT s.amount AS amount
-        FROM employees.employee AS e
-    JOIN employees.salary AS s ON e.id = s.employee_id
-    JOIN employees.department_employee AS de ON e.id = de.employee_id
-    JOIN employees.department AS d ON de.department_id = d.id
-WHERE d.dept_name = 'Sales' AND s.to_date > CURRENT_DATE
-  AND de.to_date > CURRENT_DATE ORDER BY s.amount DESC LIMIT 5) s
+SELECT SUM(amount) as Total_Savings from (
+    SELECT s.amount AS amount
+    FROM seerworks_org.salary AS s
+    JOIN seerworks_org.department_employee AS de ON s.employee_id = de.employee_id
+    JOIN seerworks_org.department AS d ON de.department_id = d.id
+    WHERE d.dept_name = 'Sales' AND s.to_date > CURRENT_DATE
+    AND de.to_date > CURRENT_DATE ORDER BY s.amount DESC LIMIT 5) s
 
 9. If 5 new employees were to be hired in Sales Department with each getting a pay of $50000, then how much
 would the average pay of all the employees in Sales department change?
@@ -92,9 +149,9 @@ WITH current_sales_data AS (
     SELECT
         SUM(s.amount) AS total_current_salary,
         COUNT(*) AS current_employee_count
-    FROM employees.salary s
-    JOIN employees.department_employee de ON s.employee_id = de.employee_id
-    JOIN employees.department d ON de.department_id = d.id
+    FROM seerworks_org.salary s
+    JOIN seerworks_org.department_employee de ON s.employee_id = de.employee_id
+    JOIN seerworks_org.department d ON de.department_id = d.id
     WHERE d.dept_name = 'Sales'
     AND de.to_date > CURRENT_DATE
     AND s.to_date > CURRENT_DATE
@@ -102,7 +159,7 @@ WITH current_sales_data AS (
 SELECT
     ( (total_current_salary + 250000) / (current_employee_count + 5) ) -
     (total_current_salary / current_employee_count) AS average_pay_change
-FROM current_sales_data;
+FROM current_sales_data
 
 10. Can you find the difference in expenses when it comes to salaries that
 are paid to employees that work in Marketing and Sales department?
@@ -111,9 +168,9 @@ WITH dept_salaries AS (
     SELECT
         d.dept_name,
         SUM(s.amount) AS total_salary
-    FROM employees.salary s
-    JOIN employees.department_employee de ON s.employee_id = de.employee_id
-    JOIN employees.department d ON de.department_id = d.id
+    FROM seerworks_org.salary s
+    JOIN seerworks_org.department_employee de ON s.employee_id = de.employee_id
+    JOIN seerworks_org.department d ON de.department_id = d.id
     WHERE d.dept_name IN ('Marketing', 'Sales')
       AND de.to_date > CURRENT_DATE
       AND s.to_date > CURRENT_DATE
@@ -123,3 +180,90 @@ SELECT
     COALESCE(MAX(CASE WHEN dept_name = 'Sales'     THEN total_salary END), 0) -
     COALESCE(MAX(CASE WHEN dept_name = 'Marketing' THEN total_salary END), 0) AS salary_difference
 FROM dept_salaries;
+
+11. Who are the top 10 employees in Sales department that are close to retirement? The retirement age is 65
+SELECT
+    e.first_name,
+    e.last_name,
+    e.gender,
+    TO_CHAR(e.hire_date, 'YYYY-MM-DD')     AS hire_date,
+    TO_CHAR(e.birth_date, 'YYYY-MM-DD')    AS birth_date,
+    EXTRACT(YEAR FROM AGE(CURRENT_DATE, e.birth_date)) AS approximate_age,
+    e.id                                   AS employee_id
+FROM seerworks_org.employee           AS e
+JOIN seerworks_org.department_employee AS de ON e.id = de.employee_id
+JOIN seerworks_org.department         AS d  ON de.department_id = d.id
+WHERE d.dept_name = 'Sales'
+  AND de.to_date > CURRENT_DATE
+  AND EXTRACT(YEAR FROM AGE(CURRENT_DATE, e.birth_date)) >= 60   -- or BETWEEN 60 AND 64
+ORDER BY e.birth_date DESC   -- oldest first = closest to retirement
+LIMIT 10;
+
+12. What is the average salary for employees per department based on their titles
+SELECT
+    d.dept_name,
+    t.title,
+    AVG(s.amount) AS average_salary
+FROM seerworks_org.salary s
+JOIN seerworks_org.employee e ON s.employee_id = e.id
+JOIN seerworks_org.department_employee de ON e.id = de.employee_id
+JOIN seerworks_org.department d ON de.department_id = d.id
+JOIN seerworks_org.title t ON e.id = t.employee_id
+WHERE s.to_date > CURRENT_DATE
+AND de.to_date > CURRENT_DATE
+AND t.to_date > CURRENT_DATE
+GROUP BY d.dept_name, t.title
+ORDER BY d.dept_name, t.title;
+
+13. Here is an example to find the average salary per department for current employees?
+    Sample response:
+    SELECT
+        d.dept_name,
+        ROUND(AVG(s.amount), 2) AS avg_salary,
+        COUNT(*) AS employee_count
+    FROM seerworks_org.salary s
+    JOIN seerworks_org.department_employee de ON s.employee_id = de.employee_id
+    JOIN seerworks_org.department d ON de.department_id = d.id
+    WHERE s.to_date > CURRENT_DATE
+      AND de.to_date > CURRENT_DATE
+    GROUP BY d.dept_name
+    ORDER BY avg_salary DESC;
+
+14. Here is an example of finding the first name, last name, gender, date of hire, birth date,
+salary, title, department and employee id of the top 2 youngest employees?
+    Sample response: "SELECT e.first_name, e.last_name, e.gender,
+                                        TO_CHAR(e.hire_date, 'YYYY-MM-DD'),
+                                        TO_CHAR(e.birth_date, 'YYYY-MM-DD'),
+                                        s.amount AS salary,
+                                        d.dept_name AS department, e.id AS employee_id, t.title as title
+                                 FROM seerworks_org.employee AS e JOIN seerworks_org.salary AS s ON e.id = s.employee_id
+                                     JOIN seerworks_org.department_employee AS de ON e.id = de.employee_id
+                                     JOIN seerworks_org.department AS d ON de.department_id = d.id
+                                     JOIN seerworks_org.title AS t ON e.id = t.employee_id
+                                     and s.to_date > current_date
+                                     and de.to_date > current_date
+                                     and t.to_date > current_date
+                                     ORDER BY e.birth_date DESC LIMIT 2"
+
+
+15. If the top 10 earning employees from each department leave, how much money can the company save?
+            WITH ranked_salaries AS (
+                SELECT
+                    d.dept_name,
+                    s.amount,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY d.dept_name
+                        ORDER BY s.amount DESC
+                    ) AS rn
+                FROM seerworks_org.salary s
+                JOIN seerworks_org.department_employee de
+                    ON s.employee_id = de.employee_id
+                JOIN seerworks_org.department d
+                    ON de.department_id = d.id
+                WHERE de.to_date > CURRENT_DATE
+                  AND s.to_date  > CURRENT_DATE
+            )
+            SELECT
+                SUM(amount) AS total_savings
+            FROM ranked_salaries
+            WHERE rn <= 10;

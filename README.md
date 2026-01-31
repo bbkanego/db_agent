@@ -10,4 +10,9 @@
 2. Example [adk_db_agent_with_tools](adk_db_agent_with_tools), "[adk_sql_agent_no_tools](adk_sql_agent_no_tools)"
 3. You need to navigate into "top" level folder i.e. /python/db_agent and the run the "adk web" command like below:
     - (.venv) bkane@bkvictus:~/code/python/db_agent$ adk-web
-4. 
+
+
+### Building an AGENT team
+- Refer this: https://github.com/google/adk-docs/tree/main/examples/python/tutorial/agent_team/adk-tutorial
+- The collab version of Agent Team is here: https://google.github.io/adk-docs/tutorials/agent-team/#step-1-your-first-agent-basic-weather-lookup
+- 

@@ -2,10 +2,13 @@ from typing import Dict
 
 from google.adk.agents import Agent
 from google.adk.agents.callback_context import CallbackContext
+from google.adk.apps import App
 from google.adk.tools.tool_context import ToolContext
 from google.adk.models.lite_llm import LiteLlm
+from google.adk.plugins import ReflectAndRetryToolPlugin
 from google.adk.tools import FunctionTool
 from google.genai.types import Part, Blob, GenerateContentConfig
+from google.adk.models import LlmRequest
 
 from utils.file_utils import read_file
 from dbscripts import database
@@ -14,6 +17,7 @@ from fpdf import FPDF # Requires: pip install fpdf2
 
 model = LiteLlm(
     #model="ollama_chat/llama3.1:8b"
+    #model="ollama_chat/codegemma:latest"
     #model="ollama_chat/pxlksr/defog_sqlcoder-7b-2:F16"
     model="ollama_chat/qwen3:latest"
 )
@@ -139,11 +143,38 @@ generate_config = GenerateContentConfig(
     top_p=1.0
 )
 
+def log_llm_request_callback(callback_context: CallbackContext, llm_request: LlmRequest):
+    print("\n\n--- LLM Request Payload ---\n")
+    # Log relevant parts of the request
+    #print(f">>>> System Instruction: {llm_request}")
+    for content in llm_request.contents:
+        print(f">>>> Content Role: {content.role}, Text: {content.parts[0].text}")
+    print("\n--- End LLM Request Payload ---\n\n")
+    return None  # Returning None allows the ADK to proceed with the normal request
+
 root_agent = Agent(
     name="DataBase_Agent",
     model=model,
     instruction=instruction_prompt,
     generate_content_config=generate_config,
     # When you assign a function to an agent’s tools list, the framework automatically wraps it as a FunctionTool.
-    tools=[run_sql_query, create_download_file]
+    tools=[run_sql_query, create_download_file],
+    before_model_callback=log_llm_request_callback
+)
+
+'''
+With this configuration, if any tool called by an agent returns an error, 
+the request is updated and tried again, up to a maximum of 3 attempts, per tool.
+'''
+app = App(
+    name="adk_db_agent_with_tools",
+    root_agent=root_agent,
+    plugins=[
+        ReflectAndRetryToolPlugin(max_retries=5,
+                                    ## This ensures that if the retries fail, the error details are formatted into
+                                  # a message and sent back to the agent as part of the normal conversation flow,
+                                  # allowing the agent to analyze it and decide on an alternative approach
+                                  # or inform the user.
+                                  throw_exception_if_retry_exceeded=False),
+    ],
 )
