@@ -317,16 +317,9 @@ FROM ranked_salaries
 WHERE rn <= 20;
 
 19. Who are the employees that are working in the Sales and Marketing department who can be considered as either boomers or Gen X?
-
-SELECT e.first_name, e.last_name, e.gender, TO_CHAR(e.hire_date, 'YYYY-MM-DD') AS hire_date,
-TO_CHAR(e.birth_date, 'YYYY-MM-DD') AS birth_date, d.dept_name AS department, e.id AS
-employee_id FROM seerworks_org.employee AS e JOIN seerworks_org.department_employee
-AS de ON e.id = de.employee_id JOIN seerworks_org.department AS d ON de.department_id = d.id
-WHERE (d.dept_name = 'Sales' OR d.dept_name = 'Marketing')
-AND (e.birth_date BETWEEN '1946-01-01' AND '1964-12-31' OR e.birth_date BETWEEN '1965-01-01' AND '1980-12-31')
-AND de.to_date > CURRENT_DATE ORDER BY e.last_name, e.first_name;
-
-
+```SQL
+SELECT e.first_name, e.last_name, e.gender, TO_CHAR(e.hire_date, 'YYYY-MM-DD') AS hire_date, TO_CHAR(e.birth_date, 'YYYY-MM-DD') AS birth_date, d.dept_name AS department, e.id AS employee_id FROM seerworks_org.employee AS e JOIN seerworks_org.department_employee AS de ON e.id = de.employee_id JOIN seerworks_org.department AS d ON de.department_id = d.id WHERE (d.dept_name = 'Sales' OR d.dept_name = 'Marketing') AND (e.birth_date BETWEEN '1946-01-01' AND '1964-12-31' OR e.birth_date BETWEEN '1965-01-01' AND '1980-12-31') AND de.to_date > CURRENT_DATE ORDER BY e.last_name, e.first_name;
+```
 Here are the employees in the Sales and Marketing departments who fall into the Boomer (1946–1964) or Gen X (1965–1980) birth date ranges. The results are truncated to show the first 10 entries, with a total of 2,145 records matching the query:
 first_name 	last_name 	gender 	hire_date 	birth_date 	department 	employee_id
 Sarah 	Johnson 	F 	1990-05-15 	1968-09-22 	Marketing 	123456

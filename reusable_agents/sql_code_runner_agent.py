@@ -3,10 +3,12 @@ import logging
 import traceback
 
 import pandas as pd
+from google.adk import events
 from google.adk.agents import LlmAgent
 from google.adk.models import LiteLlm
-from google.adk.tools import ToolContext
-from google.genai.types import GenerateContentConfig
+from google.adk.sessions import InMemorySessionService
+from google.adk.tools import ToolContext, LongRunningFunctionTool
+from google.genai.types import GenerateContentConfig, Content, Part
 
 from dbscripts import database
 from model.common_models import SqlReviewOutput
@@ -87,6 +89,20 @@ def run_sql_query(tool_context: ToolContext) -> dict:
         # after catching raise it, so the model can retry
         raise e
 
+long_running_sql_runner_tool = LongRunningFunctionTool(func=run_sql_query)
+
+# # Session and Runner
+# session_service = InMemorySessionService()
+#
+# def inform_user_on_sql_run():
+#     text_part = Part.from_text(text="Here is a description of the image that follows.")
+#
+#     response_content = Content(role='model', parts=[text_part])
+#     status_event = events.Event(
+#         author='model',
+#         content= response_content
+#     )
+#     session_service.append_event(session_service.get_session(), status_event)
 
 def create_sql_runner_agent():
     return LlmAgent(
@@ -126,5 +142,5 @@ def create_sql_runner_agent():
             2. If the "result" element in response is a single record, you will provide the response by converting into a sentence.
         ''',
         generate_content_config=sql_runner_agent_config,
-        tools=[run_sql_query]
+        tools=[long_running_sql_runner_tool]
 )
