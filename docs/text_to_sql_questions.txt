@@ -26,6 +26,23 @@ WHERE
 ORDER BY
     e.last_name, e.first_name;   -- optional: alphabetical sort
 
+
+Here are the employees in the Marketing department who are baby boomers (born 1946-1964) and earn more than $100K:
+first_name 	last_name 	gender 	hire_date 	birth_date 	salary 	department 	employee_id
+Hidefumi 	Aamodt 	M 	1993-06-19 	1959-08-01 	$116,825 	Marketing 	292102
+Mats 	Aamodt 	F 	1989-10-03 	1952-05-02 	$114,221 	Marketing 	42199
+Jenwei 	Adachi 	F 	1985-09-22 	1959-02-16 	$115,087 	Marketing 	80811
+Aloys 	Akaboshi 	M 	1988-06-16 	1953-05-04 	$103,554 	Marketing 	448131
+Geoff 	Alameldin 	F 	1987-10-14 	1955-03-18 	$102,266 	Marketing 	403285
+Shrikanth 	Alameldin 	M 	1986-02-17 	1960-03-08 	$120,849 	Marketing 	210420
+Tzvetan 	Alameldin 	F 	1993-04-30 	1960-04-19 	$102,838 	Marketing 	292558
+Anwar 	Alblas 	M 	1987-10-03 	1957-05-15 	$118,445 	Marketing 	438746
+Alair 	Aloia 	M 	1988-09-08 	1963-10-14 	$103,448 	Marketing 	451741
+Kwangsub 	Aloia 	F 	1986-04-03 	1963-11-11 	$108,848 	Marketing 	482013
+
+Total records found: 1,974 (display is truncated). Let me know if you'd like to see specific details about these employees!
+
+
 2. Who are the employees that are working in the Marketing department who make more than 100K and can be called as Gen X?
 SELECT
     e.first_name,
@@ -267,3 +284,34 @@ salary, title, department and employee id of the top 2 youngest employees?
                 SUM(amount) AS total_savings
             FROM ranked_salaries
             WHERE rn <= 10;
+
+16. How many employees in the sales department?
+SELECT COUNT(*) AS employee_count
+FROM seerworks_org.department_employee de
+JOIN seerworks_org.department d ON de.department_id = d.id
+WHERE d.dept_name = 'Sales'
+AND de.to_date > CURRENT_DATE;
+
+17. Invalid question: There is a sports day being held in the company, and we are looking for people with BMI of 40 to play in the football team. Can you find those people?
+Expected response: I do not understand the question. The available database schema does not contain any columns related to height, weight, or BMI calculation. The employee table only has birth_date, which cannot be used to determine BMI.
+I got the above response from Qwen. Codegemma hallucinated.
+
+18. If the top 20 earning employees from each department leave, how much can the company save over the next 5 years?
+WITH ranked_salaries AS (
+    SELECT
+        d.dept_name,
+        s.amount,
+        ROW_NUMBER() OVER (
+            PARTITION BY d.dept_name
+            ORDER BY s.amount DESC
+        ) AS rn
+    FROM seerworks_org.salary s
+    JOIN seerworks_org.department_employee de ON s.employee_id = de.employee_id
+    JOIN seerworks_org.department d ON de.department_id = d.id
+    WHERE de.to_date > CURRENT_DATE
+      AND s.to_date > CURRENT_DATE
+)
+SELECT
+    ROUND(SUM(amount) * 5, 2) AS estimated_five_year_savings
+FROM ranked_salaries
+WHERE rn <= 20;
